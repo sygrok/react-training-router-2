@@ -49,7 +49,7 @@ function App() {
                   // ...
                 } else {
                   const resData = await response.json();
-                  return resData;
+                  return resData.events; //events is defined in dummy backend in order to get it we have to speciyf it here
                 }
               },
             },
