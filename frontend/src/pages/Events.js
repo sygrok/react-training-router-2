@@ -2,11 +2,15 @@ import { useLoaderData } from "react-router-dom";
 import EventsList from "../components/EventsList";
 
 function EventsPage() {
-  const events = useLoaderData();
+  const data = useLoaderData();
+
+  // if (data.isError) {
+  //   return <p>{data.message}</p>;
+  // }
 
   return (
     <>
-      <EventsList events={events} />
+      <EventsList events={data.events} />
     </>
   );
 }
@@ -14,11 +18,14 @@ function EventsPage() {
 export default EventsPage;
 
 export async function loader() {
-  const response = await fetch("http://localhost:8080/events");
+  const response = await fetch("http://localhost:8080/eventss");
 
   if (!response.ok) {
+    // return { isError: true, message: "Couldn't fetch events." };
+    throw { message: "Couldn't fetch." };
   } else {
-    const resData = await response.json();
-    return resData.events; //events is defined in dummy backend in order to get it we have to speciyf it here
+    return response;
+    // const resData = await response.json();
+    // return resData.events; //events is defined in dummy backend in order to get it we have to speciyf it here
   }
 }
