@@ -9,7 +9,8 @@ const ErrorPage = () => {
   let message = "Something went wrong!";
 
   if (error.status === 500) {
-    message = JSON.parse(error.data).message;
+    message = error.data.message;
+    // message = JSON.parse(error.data).message; // thanks to alternative json method, we don't have to parse
   }
 
   if (error.status === 404) {
