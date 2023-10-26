@@ -1,38 +1,55 @@
-import { json, useLoaderData } from "react-router-dom";
+import { Await, defer, json, useLoaderData } from "react-router-dom";
 import EventsList from "../components/EventsList";
+import { Suspense } from "react";
 
 function EventsPage() {
-  const data = useLoaderData();
-
-  // if (data.isError) {
-  //   return <p>{data.message}</p>;
-  // }
+  const { events } = useLoaderData();
 
   return (
-    <>
-      <EventsList events={data.events} />
-    </>
+    <Suspense fallback={<p style={{ textAlign: "center" }}>Loading...</p>}>
+      <Await resolve={events}>
+        {/* once we have data function below works */}
+        {(loadedEvents) => <EventsList events={loadedEvents} />}
+      </Await>
+    </Suspense>
   );
+
+  //without defer
+  // const data = useLoaderData();
+  // return (
+  //   <>
+  //     <EventsList events={data.events} />
+  //   </>
+  // );
 }
 
 export default EventsPage;
 
-export async function loader() {
+async function loadEvents() {
   const response = await fetch("http://localhost:8080/events");
 
   if (!response.ok) {
-    // return { isError: true, message: "Couldn't fetch events." };
-
-    //throw new
-    // throw new Response(JSON.stringify({ message: "Couldn't fetch." }), {
-    //   status: 500,
-    // });
-
-    //json
     throw json({ message: "Couldn't fetch events" }, { status: 500 });
   } else {
-    return response;
-    // const resData = await response.json();
-    // return resData.events; //events is defined in dummy backend in order to get it we have to speciyf it here
+    const resData = await response.json();
+    return resData.events;
   }
 }
+
+export function loader() {
+  return defer({
+    events: loadEvents(),
+  });
+}
+
+//without defer
+// export async function loader() {
+//   const response = await fetch("http://localhost:8080/events");
+
+//   if (!response.ok) {
+
+//     throw json({ message: "Couldn't fetch events" }, { status: 500 });
+//   } else {
+//     return response;
+//   }
+// }
