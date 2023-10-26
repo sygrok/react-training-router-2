@@ -1,6 +1,7 @@
 import {
   Outlet,
   json,
+  redirect,
   useLoaderData,
   useParams,
   useRouteLoaderData,
@@ -34,5 +35,19 @@ export async function loader({ request, params }) {
     );
   } else {
     return response;
+  }
+}
+
+//delete action for <EventItem />
+export async function action({ params, request }) {
+  const eventId = params.eventId;
+  const response = await fetch("http://localhost:8080/events/" + eventId, {
+    method: request.method, //request is defined in <EventItem />
+  });
+
+  if (!response.ok) {
+    throw json({ message: "Couldn't delete!" }, { status: 500 });
+  } else {
+    return redirect("/events");
   }
 }
