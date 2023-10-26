@@ -50,11 +50,18 @@ function App() {
             },
             {
               path: ":eventId",
-              element: <EventDetailPage />,
-              loader: eventDetailLoader,
+              id: "event-detail", //needed to use 'useRouteLoaderData('id') other than useLoaderData()
+              loader: eventDetailLoader, //can be used for same level paths. in order to not use it twice we nested the both paths that needs the same loader
+              children: [
+                {
+                  index: true,
+                  element: <EventDetailPage />,
+                },
+                { path: "edit", element: <EditEventPage /> },
+              ],
             },
+
             { path: "new", element: <NewEventPage /> },
-            { path: ":eventId/edit", element: <EditEventPage /> },
           ],
         },
       ],
