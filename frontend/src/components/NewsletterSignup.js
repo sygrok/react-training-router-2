@@ -20,6 +20,7 @@ function NewsletterSignup() {
       className={classes.newsletter}
     >
       <input
+        name="email"
         type="email"
         placeholder="Sign up for newsletter..."
         aria-label="Sign up for newsletter"
